@@ -1,0 +1,103 @@
+\documentclass[11]{article}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{amsmath}
+\usepackage{fancyhdr}
+\usepackage{mathtools}
+\usepackage[margin=0.8in]{geometry}
+\usepackage[latin1]{inputenc}
+\usepackage{tikz}
+\usetikzlibrary{trees}
+\usepackage{verbatim}
+\usepackage[hidelinks]{hyperref}
+
+\input{macro}
+
+
+\setcounter{MaxMatrixCols}{20}
+
+% Non-trivial normal subgroups / ideals
+\newcommand{\trianglerightneq}{\mathrel{\ooalign{\raisebox{-0.5ex}{\reflectbox{\rotatebox{90}{$\nshortmid$}}}\cr$\triangleright$\cr}\mkern-3mu}}
+\newcommand{\triangleleftneq}{\mathrel{\reflectbox{$\trianglerightneq$}}}
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+
+\newcommand{\z}{\mathbb{Z}}
+\newcommand{\n}{\mathbb{N}}
+\newcommand{\q}{\mathbb{Q}}
+\newcommand{\real}{\mathbb{R}}
+\newcommand{\zp}{\mathbb{Z}_p}
+\newcommand{\emod}[1]{\underset{#1}{\equiv}}
+\newcommand{\per}[1]{\left(#1\right)}
+\newcommand{\normal}{\vartriangleleft}
+\newcommand{\normalneq}{\triangleleftneq}
+\newcommand{\nor}[1]{||#1||}
+\newcommand{\intring}{\mathcal{O}}
+\newcommand{\partiald}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\bigslant}[2]{{\raisebox{.2em}{$#1$}\left/\raisebox{-.2em}{$#2$}\right.}}
+\newcommand{\gen}[1]{\langle #1\rangle}
+\newcommand{\sdt}[2]{#1\rtimes_\theta #2}
+\newcommand\restr[2]{{% we make the whole thing an ordinary symbol
+  \left.\kern-\nulldelimiterspace % automatically resize the bar with \right
+  #1 % the function
+  \vphantom{\big|} % pretend it's a little taller at normal size
+  \right|_{#2} % this is the delimiter
+  }}
+\makeatletter
+\providecommand*{\cupdot}{%
+  \mathbin{%
+    \mathpalette\@cupdot{}%
+  }%
+}
+\newcommand*{\@cupdot}[2]{%
+  \ooalign{%
+    $\m@th#1\cup$\cr
+    \hidewidth$\m@th#1\cdot$\hidewidth
+  }%
+}
+\makeatother
+
+\newenvironment{proof}[1][Proof]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+\allowdisplaybreaks
+
+\pagestyle{fancy}
+\rhead{Paper Sketch}
+\lhead{DeRandomizing SZK}
+
+\begin{document}
+\lecture{}{10/10/20}{Paper Sketch}{Eyal Golombek}
+
+\section{Abstract}
+
+\section{Definitions and Prelimineris}
+
+\section{Derandomizing IP[const]}
+
+\section{Why tackle $\HVSZK$ and not $\SZK$?}
+
+\section{$\varepsilon \PRG$ build}
+
+\section{Inverting the $\PRG$}
+
+\section{Knowledge complexity Vs Randomness tradeoff}
+
+\subsection{Borrowing randomness from the proover}
+
+\subsection{Knowledge complexity and sequential repetitions}
+
+\section{Why can't we get Zero-Knowoledge?}
+
+\section{Super-Constant number of rounds}
+
+\section{Computational Settings}
+
+\subsection{Trusted Hardware}
+
+
+ 
+\end{document}
+
+
+

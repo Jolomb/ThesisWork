@@ -1,0 +1,292 @@
+% \usepackage{hyperref}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{question}{Question}[section]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\handout}[4]{
+  \noindent
+  \begin{center}
+  \framebox{
+    \vbox{
+      \hbox to 6.25in { {\bf Thesis Work in Cryptography} \hfill #2 -- Meeting #1}
+      \vspace{4mm}
+      \hbox to 6.25in { {\Large #3 \hfill} }
+      \vspace{2mm}
+      \hbox to 6.25in { {\em #4 \hfill } }
+      \vspace{1mm}
+      \hbox to 6.25in { {\em Benny Applebaum \hfill } }
+    }
+  }
+  \end{center}
+  \vspace*{4mm}
+}
+
+\newcommand{\lecture}[4]{\handout{#1}{#2}{#3}{#4}}
+%
+%\newcommand{\handoutb}[2]{
+%  \noindent
+%  \begin{center}
+%  \framebox{
+%    \vbox{
+%      \hbox to 6.25in { {\bf 03683072: Error Correcting Codes.} \hfill #1}
+%      \vspace{4mm}
+%      \hbox to 6.25in { {\Large #2 \hfill} }
+%      \vspace{2mm}
+%      \hbox to 6.25in { {\em Amnon Ta-Shma and Dean Doron \hfill} }
+%    }
+%  }
+%  \end{center}
+%  \vspace*{4mm}
+%}
+%
+%\newcommand{\exam}[2]{\handoutb{#1}{#2}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DeclareMathOperator*{\E}{\mathbb{E}}
+%\let\Pr\relax
+%\DeclareMathOperator*{\Pr}{\mathbb{P}}
+
+\newcommand\C{{\mathbb{C}}}
+\newcommand\R{{\mathbb{R}}}
+\newcommand\Q{{\mathbb{Q}}}
+\newcommand\Quat{{\mathbb{H}}}
+\newcommand\M{{\mathbb{M}}}
+\newcommand\F{{\mathbb{F}}}
+\newcommand\Z{{\mathbb{Z}}}
+
+
+
+\newcommand\X{{\mathcal{X}}}
+\newcommand\cC{{\mathcal{C}}}
+\newcommand{\cD}{\mathcal{D}}
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\cH}{\mathcal{H}}
+\newcommand{\cL}{\mathcal{L}}
+\newcommand{\cO}{\mathcal{O}}
+\newcommand{\cP}{\mathcal{P}}
+\newcommand\cM{{\mathcal{M}}}
+\newcommand{\cE}{\mathcal{E}}
+\newcommand{\rE}{\mathrm{E}}
+\newcommand{\cW}{\mathcal{W}}
+\newcommand{\cQ}{\mathcal{Q}}
+
+\newcommand{\cA}{{\mathrm A}}
+%\newcommand{\cC}{{\mathrm C}}
+%\newcommand{\cL}{{\mathrm L}}
+%\newcommand{\cM}{{\mathrm M}}
+\newcommand{\cN}{{\mathrm N}}
+\newcommand{\cS}{{\mathrm S}}
+\newcommand{\cT}{{\mathrm T}}
+\newcommand{\N}{{\mathbb{N}}}
+
+\newcommand{\Ext}{{\mathsf{Ext}}}
+
+\newcommand{\cc}{{r}}
+\newcommand{\cm}{{m}}
+\newcommand{\ct}{{t}}
+\newcommand{\cons}{{c}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\Ftwo}{{\F_2}}
+\newcommand\Fh{{\F_h}}
+\newcommand{\Fp}{{\F_p}}
+\newcommand\Fq{{\F_q}}
+\newcommand\Fqs{{\F_{q^2}}}
+\newcommand\Fqn{{\F_{q^n}}}
+\newcommand\Fqr{{\F_{q^r}}}
+
+\newcommand\Fbase{{F_{base}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand\io{{\text{$\mathsf{io}$-}}}
+\newcommand\pr{{\text{$\mathsf{Promise}$-}}}
+\newcommand\heur{{\text{$\mathsf{Heur}$}}}
+\newcommand\avg{{\text{$\mathsf{Avg}$}}}
+\newcommand\RS{{\text{$\mathsf{RS}$}}}
+\newcommand\Had{{\text{$\mathsf{Had}$}}}
+\newcommand{\Perm}{{\mathrm{Perm}}}
+\newcommand{\ModPerm}{{\mathrm{ModPerm}}}
+\newcommand\SD{{\text{$\mathsf{SD}$}}}
+
+\newcommand{\PRG}{\mathsf{PRG}}
+
+\newcommand\ACz{{\mathsf{AC}^{0}}}
+\newcommand\TCz{{\mathsf{TC}^{0}}}
+\newcommand\ACCz{{\mathsf{ACC}^{0}}}
+\newcommand{\LOG}{\mathsf{LOG}}
+\newcommand{\NC}{\mathsf{NC}}
+\newcommand{\AC}{\mathsf{AC}}
+\newcommand{\RL}{\mathsf{RL}}
+\newcommand{\nuANC}{\mathsf{nuANC}^{2}}
+\newcommand{\APpoly}{\mathsf{AP}/\mathsf{poly}}
+\newcommand\PI{{\mathsf{P}}}
+\newcommand{\NP}{\mathsf{NP}}
+\newcommand{\coNP}{\mathsf{coNP}}
+\newcommand{\NE}{\mathsf{NE}}
+\newcommand{\coNE}{\mathsf{coNE}}
+\newcommand{\RP}{\mathsf{RP}}
+\newcommand{\coRP}{\mathsf{coRP}}
+\newcommand{\SIZE}{\mathsf{SIZE}}
+\newcommand{\BPP}{\mathsf{BPP}}
+\newcommand{\PBPP}{\mathsf{PromiseBPP}}
+\newcommand{\PBPTIME}{\mathsf{PromiseBPTIME}}
+\newcommand{\BPL}{\mathsf{BPL}}
+\newcommand{\EL}{\mathsf{L}}
+\newcommand{\ZPP}{\mathsf{ZPP}}
+\newcommand{\MA}{\mathsf{MA}}
+\newcommand{\AM}{\mathsf{AM}}
+\newcommand{\PH}{\mathsf{PH}}
+\newcommand{\PSP}{\mathsf{P}^{\#\mathsf{P}}}
+\newcommand{\SP}{\#\mathsf{P}}
+\newcommand{\ParP}{\oplus\mathsf{P}}
+\newcommand{\IP}{\mathsf{IP}}
+\newcommand{\NIIP}{\mathsf{NI-IP}}
+\newcommand{\Ppoly}{\mathsf{P}/\mathsf{poly}}
+\newcommand{\PSPACE}{\mathsf{PSPACE}}
+\newcommand{\SUBEXP}{\mathsf{SUBEXP}}
+\newcommand{\EXP}{\mathsf{EXP}}
+\newcommand{\NEXP}{\mathsf{NEXP}}
+\newcommand{\REXP}{\mathsf{REXP}}
+\newcommand{\ZEXP}{\mathsf{ZEXP}}
+\newcommand\DTIME{{\mathsf{DTIME}}}
+\newcommand\BPTIME{{\mathsf{BPTIME}}}
+\newcommand\RPTIME{{\mathsf{RPTIME}}}
+\newcommand\DSPACE{{\mathsf{DSPACE}}}
+\newcommand\RSPACE{{\mathsf{RSPACE}}}
+\newcommand\NSPACE{{\mathsf{NSPACE}}}
+\newcommand\BPSPACE{{\mathsf{BPSPACE}}}
+\newcommand\NTIME{{\mathsf{NTIME}}}
+\newcommand\RTIME{{\mathsf{RTIME}}}
+\newcommand\ZTIME{{\mathsf{ZTIME}}}
+\newcommand\ZPE{{\mathsf{ZPE}}}
+\newcommand\EE{{\mathsf{EE}}}
+\newcommand{\PP}{\mathsf{PP}}
+\newcommand{\GapP}{\mathsf{GapP}}
+\newcommand{\FP}{\mathsf{FP}}
+\newcommand{\Image}{\mathsf{Image}}
+\newcommand{\SizeDegree}{\mathsf{SizeDegree}}
+
+\newcommand{\HVSZK}{\mathsf{HVSZK}}
+\newcommand{\SZK}{\mathsf{SZK}}
+\newcommand{\CZK}{\mathsf{CZK}}
+\newcommand{\ZK}{\mathsf{ZK}}
+\newcommand{\NIZK}{\mathsf{NIZK}}
+\newcommand{\NISZK}{\mathsf{NISZK}}
+\newcommand{\PZK}{\mathsf{PZK}}
+
+\newcommand\SAT{{\mathrm{SAT}}}
+\newcommand\USAT{{\mathrm{UniqueSAT}}}
+\newcommand\CLIQUE{{\mathrm{CLIQUE}}}
+\newcommand\UCLIQUE{{\mathrm{UniqueCLIQUE}}}
+\newcommand\PERM{{\mathrm{PERM}}}
+\newcommand\PIT{{\mathrm{PIT}}}
+\newcommand\CSAT{{\mathrm{CSAT}}}
+\newcommand{\SSAT}{{\mathrm{Succinct3SAT}}}
+\newcommand{\UNSAT}{{\mathrm{UNSAT}}}
+\newcommand{\SPEEDUP}{{\mathrm{SP}}}
+
+\newcommand{\codeC}{{\mathcal C}}
+\newcommand{\mC}{{\mathcal{C}}}
+\newcommand{\mP}{{\mathcal{P}}}
+\newcommand{\codeTR}{{\codeC_{TR}}}
+\newcommand{\genus}{{\rm genus}}
+\newcommand{\BAD}{{\rm BAD}}
+\newcommand{\adv}{\mathrm{adv}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\rv}[1]{{\mathbf{#1}}}
+
+\newcommand{\Exp}{{\mathbb{E}}}
+\newcommand\Tr{{\mathop\textup{Tr}}}
+\newcommand\No{{\mathop\textup{N }}}
+\newcommand\Span{{\mathop\textup{Span}}}
+\newcommand{\set}[1]{\left\{{#1}\right\}}
+\newcommand{\B}{\set{0,1}}
+
+\newcommand{\ol}[1]{{\overline{#1}}}
+\newcommand{\eqdef}{\stackrel{{\rm def}}{=}}
+\newcommand{\softoh}{{\ensuremath \widetilde{O}}}
+\newcommand{\Mon}{{Mon_{\ol{v},K}}}
+\newcommand{\MonD}{{{\rm Mon}_D}}
+
+\def\eps{\varepsilon}
+\newcommand{\half}{\frac{1}{2}}
+\newcommand{\lamb}{\bar{\lambda}}
+\newcommand{\one}{\mathbf{1}}
+%\newcommand{\eps}{\epsilon}
+\newcommand{\logeps}{\log{\frac{1}{\epsilon}}}
+\newcommand{\poly}{{\rm poly}}
+\newcommand{\sgn}{\mbox{sgn}}
+
+\renewcommand{\bmod}{{\rm mod~}}
+\renewcommand{\div}{{\rm div}}
+\renewcommand{\mod}{{\rm mod}}
+\renewcommand{\leq}{\leqslant}
+\renewcommand{\geq}{\geqslant}
+\renewcommand{\eps}{\varepsilon}
+
+\newcommand{\Hg}{H_g}
+\newcommand{\Hge}{H_g^\eps}
+\newcommand{\Pl}{\textbf{\textrm{P}}}
+\newcommand{\Pinf}{{P_\infty}}
+\newcommand\Size{{\mathsf{Size}}}
+
+\newcommand{\zigzag}{\textcircled{z}}
+
+\newcommand\YES{{\mathsf{YES}}}
+\newcommand\NO{{\mathsf{NO}}}
+\newcommand\yes{{\mathsf{yes}}}
+\newcommand\no{{\mathsf{no}}}
+\newcommand\quit{{\mathsf{quit}}}
+
+\newcommand{\ra}{\rangle}
+\newcommand{\la}{\langle}
+\newcommand{\ket}[1]{\left|#1\right\rangle}
+\newcommand{\bra}[1]{\left\langle #1\right|}
+\newcommand{\braket}[2]{\left.\left\langle #1\right|#2\right\rangle}
+\newcommand{\ketbra}[2]{\ket{#1}\!\bra{#2}}
+\newcommand{\tensor}{{\otimes}}
+\newcommand{\tnorm}[1]{\norm{#1}_{\mathrm{tr}}}
+\newcommand{\state}[1]{D(#1)}
+% \newcommand{\norm}[1]{\left\|\,#1\,\right\|}
+\newcommand{\norm}[1]{\left\|#1\right\|}
+\newcommand{\trnorm}[1]{\norm{#1}_{\mathrm {tr}}}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\topmargin 0pt \advance \topmargin by -\headheight \advance
+\topmargin by -\headsep \textheight 8.9in \oddsidemargin 0pt
+\evensidemargin \oddsidemargin \marginparwidth 0.5in \textwidth
+6.5in
+
+\parindent 0in
+\parskip 1.0ex
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand\dean[1]{\textcolor{cyan}{Dean:~#1}}
+\newcommand\amnon[1]{\textcolor{blue}{Amnon:~#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
