@@ -71,23 +71,151 @@
 
 \section{Abstract}
 
-\section{Definitions and Prelimineris}
+\section{Definitions, Notations and Prelimineris}
 
 \section{Derandomizing IP[const]}
 
+\subsection{Random hash function}
+
+\definition{Soundness preserving PRG}
+
+Given some length extending function $G:\{0,1\}^{S(n)} \to \{0,1\}^{R(n)}$ for $S(n) < R(n)$ we say that $G$ is $(\varepsilon, n^d, C(n))$-Soundness Preserving $\PRG$ if for every $\IP$ protocol $<P,V>$ such that running time of $V$ is bounded by $n^d$, and the number of random coins $V$ uses is $R(n)$, and the length of the communication $V \to P$ is $C(n)$ the following holds:
+
+Denote with $V^G$ the derandomized verifier, than:
+
+For every $x \in \{0,1\}^n$ and for every $P^*$ determenistic \footnote{The reason we care only about deterministic proovers is that the best prover strategy can always be transformed to a determinstic strategy. This will pose a problem when dealing with $\SZK$, however we will be dealing with $\HVSZK$. See \cite{DL20} for details.} prover strategy:
+	
+$$ |\Pr_{s \in U_s}[<P^*,V^G>(x, r) = 1] - \Pr_{r \in U_r}[<P^*, V>(x, s) = 1]| \leq \varepsilon$$
+	
+
+\claim {Collections of PRGs from Hashing} (Paraphrasing of Corollary 5.4 of \cite{AASY16})
+
+For every constant $c > 1$ and every shrinking function $l(r) < r$, the following holds. With probabilty $1-r^{-c}$, a random $t=r^{c+1}$ -wise independent hash function $h: \{0,1\}^s \to \{0,1\}^r$ with input length $s = 2l(r) + (2c + 1)\log(r)$ is a $2^{-l(r)}r^{-c}$ - $\PRG$ against $r^c$-size circuits. We denote the hash family with $\mathcal{H}: \{h_z: \{0,1\}^s \to \{0,1\}^r\}$
+
+\begin{corollary}[Soundness preserving $\PRG$ fron random hash]
+\label{PRG from random hash}
+
+Given $\mathcal{H}: \{h_z:\{0,1\}^{2C(n) + (2d+1)\log(R(n))} \to \{0,1\}^{R(n)}\}$ a set of $R(n)^{d+1}$-wise independent hash functions, than a random $h_z \hookleftarrow \mathcal{H}$ is a $(2R(n)^{-d}, R(n)^{d}, C(n))$-Soundness preserving $\PRG$ with error probability of $R(n)^{-d}$.
+
+\end{corollary}
+
+\begin{proof}
+
+We know that a random $h_z \hookleftarrow \mathcal{H}$ as stated above is a $2^{-C(n)}R(n)^{-d}$-$\PRG$ against $R(n)^d$ bounded circuits with probability $1 - R(n)^{-d}$.
+
+Let $<P,V>$ be some interactive proof for some $L \in \IP[k]$, such that $V$ uses $R(n)$ random coins and sends in total $C(n)$ bits of communication to $P$ during the interaction. Assume that the running time of $V$ is bounded by $R(n)^d$. Let $P^*$ be some deterministic prover strategy and let $x \in \{0,1\}^n$ be some shared input.
+
+For any $z$ such that $h_z \hookleftarrow \mathcal{H}$ is indeed a $2^{-C(n)}R(n)^{-d}$ $\PRG$ against $R(n)^d$ circuits, we will show that the following distributions are $(R(n)^d, 2R(n)^{-d})$ computationally indistiguishable:
+
+\begin{enumerate}
+ \item $View_V(x,U_r)$ - The view of $V$ when interacting with $P^*$ on a proof over shared input $x$ when the randomness of $V$ is drawn from the uniform distribution $U_r$.
+ 
+ \item $View_V(x, h_z(U_s))$ - The view of $V$ when interacting with $P^*$ on a proof over shared input $x$ when the randomness of $V$ is drawn as the output of $h_z$ over the uniform distribution $U_s$. \footnote{This is \textbf{not} the view of the derandomized verifer $V_{h_z}$ since this verifier would also have the seed as part of it's view}
+\end{enumerate}
+
+Assume towards contraditction that there exists some distinguisher $D$ wich is a TM of running time at most $R(n)^d$ that can distinguish theese two distributions with advantage better than $2R(n)^-d$. Thus:
+
+$$ |\Pr_{r \hookleftarrow U_R}[D(View_V(x, r)) = 1] - \Pr_{s \hookleftarrow U_s}[D(View_V(x, h_z(s)) = 1]| \geq 2R(n)^{-d}$$
+
+We denote $\vec{a}$ the messages $V$ sent $P$ during an interaction $\vec{a} = (v_0, v_1, v_2,..., v_{k/2})$ and we denote $\vec{b}$ the messages $P^*$ sent $V$ during the interaction. $\vec{b} = (p_0, p_1, p_2,..., p_{k/2})$ \footnote{W.L.G we can assume the amount of rounds is even. Otherwise we add a null round.}
+
+Since $P^*$ is determinstic, than the message generating function of $P^*$ is dependant solely on the messages sent $V \to P$. Thus the amount of different possible conversations between $V$ to $P^*$ is the amount of different messages that $V$ can send to $P$ during the interaction. In other words $p_i$ is a function of $x$ and $a_0,...,a_i$ only.
+
+Since the communication between $V$ to $P$ is bounded by $C(n)$ we get:
+
+$$ \bigg| \sum_{\hat{a} \hookleftarrow \{0,1\}^{C(n)}}\
+\bigg(\
+\Pr_{r \hookleftarrow U_R} [D(x, r,\vec{a}, \vec{b}(x,\vec{a})) = 1 | \vec{a}=\hat{a}]\Pr_{r \hookleftarrow U_r}[\vec{a}=\hat{a}]$$
+$$- \Pr_{s \hookleftarrow U_S} [D(x, h_z(s),\vec{a}, \vec{b}(\vec{a})) = 1 | \vec{a}=\hat{a}]\Pr_{s \hookleftarrow U_S}[\vec{a}=\hat{a}]\
+\bigg) \bigg| \geq 2R(n)^{-d}$$
+
+We have a sum of $C(n)$ elements. Using the triangle inequality we know that there should be at lesat one element $\tilde{a}$ such that:
+
+$$ \bigg| \Pr_{r \hookleftarrow U_R} [D(x, r,\vec{a}, \vec{b}(x,\vec{a})) = 1 | \vec{a}=\tilde{a}]\Pr_{r \hookleftarrow U_r}[\vec{a}=\tilde{a}]$$
+$$- \Pr_{s \hookleftarrow U_S} [D(x, h_z(s),\vec{a}, \vec{b}(\vec{a})) = 1 | \vec{a}=\tilde{a}]\Pr_{s \hookleftarrow U_S}[\vec{a}=\tilde{a}]\
+\bigg| \geq \frac{2R(n)^{-d}}{2^{C(n)}}$$
+
+We denote $\tilde{b}$ the (unique) vector of responses of the prover $P^*$ when interacting with the verifier on messages $\tilde{a}$.
+
+Now we can define a new turing machine $D'_{\tilde{a}, \tilde{b}}: \{0,1\}^{R(n)} \to \{0,1\}$. On a given input $w \in \{0,1\}^{R(n)}$, the distinguisher $D'_{\tilde{a}, \tilde{b}}$ will run the message generating function of $V$ on $x$ and using $w$ as the random coins, and will emulate $P^*$ responses using $\tilde{b}$. Denote $\vec{e}$ the emulated conversation. if $\vec{e} \neq (\tilde{a}, \tilde{b})$ than $D_{\tilde(a), \tilde(b)}$ rejects. Otherwise $D_{\tilde{a}, \tilde{b}}$ return $D(x, w, \tilde{a}, \tilde{b})$.
+
+The running time of $D_{\tilde{a}, \tilde{b}}$ is comprised of emulating $V$ which runs in $R(n)^d$ time, and running $D$ which is also bounded by $R(n)^d$, thus $D_{\tilde{a}, \tilde{b}}$ is time bounded by $R(n)^d$.
+
+Clearly $D_{\tilde{a}, \tilde{b}}$ can distinguish $U_{R(n)}$ from $h_z(U_{S(n)})$ with advantage $2R(n)^{-d} 2^{-C(n)}$ which is a contradiction to the fact that $h_z$ is a $2^{-C(n)} R(n)^{-d}$ - $\PRG$ against $R(n)^d$ bounded circuits.
+
+In conclusion we have shown that $View_V(x,U_r)$ and $View_V(x, h_z(U_s))$ are $(R(n)^d, 2R(n)^{-d})$ computationally close. We denote with $V_{acc}$ the predicate that given an interaction between $P$ and $V$ will decide wether $V$ should accept or reject. Clearly $V_acc$ is time bound by $R(n)^d$ and so is foolded by the two indistinguishable distributions.
+
+To sum it all up:
+
+$$ \bigg| \Pr_{s \in U_{S(n)}} [<P^*, V^{h_z}>(x, r) = 1] - \Pr_{r \in U_{R(n)}}[<P^*, V>(x,r) = 1] \bigg| = $$
+$$ \bigg| \Pr_{s \in U_{S(n)}} [V_{acc}(View_V(x, h_z(s))) = 1] - \Pr_{r \in U_{R(n)}} [V_{acc}(View_V(x, h_z(r))) = 1] \bigg| \leq 2R(n)^{-d}$$
+
+This is true for any strategy $P^*$ and any shared input $x$, for any $z$ such that $h_z$ is indeed a strong $\PRG$. Such $z$ are drawen with probability $1 - R(n)^{-d}$ and for such those $z$ we get that $h_z$ is a $(R(n)^{-d}, R(n)^d, C(n))$ Soundness preserving $\PRG$ as required.
+
+\end{proof}
+
+\subsection{Sampling an hash function at random - Efficient?}
+
+\textbf{TODO:}
+Explain why we can uniformly select hash functions, and there is one algorithm to generate the hash function for any $z$.
+
+Explain the low-degree polynomials, and how random complex is choosing one at random.
+
+\subsection{De-Randomizing the hash function selection}
+Given a specific family of hash functions $\mathcal{H}_{C,d}$ that satisfies \ref{PRG from random hash} and given the evaluation algorithm $H: \{0,1\}^{Z(n)} \times \{0,1\}^{S(n)} \to \{0,1\}^{R(n)}$ which evaluates to $H(z, \cdot) = h_z(\cdot)$ and runs in polynomial time:
+We define a promise problem $\Pi_{C,d,R}$ over strings $z$ such that:
+\begin{itemize}
+	\item $z \in \Pi_{YES}$ if $H(z, \cdot)$ is not an $(4R(n)^d, R(n)^d, C(n))$ soundness preserving $\PRG$.
+	\item $z \in \Pi_{NO}$ if $H(z, \cdot)$ is a $(2R(n)^d, R(n)^d, C(n)$
+\end{itemize}
+
+\begin{claim} {for any constant $d > 1$ and length extending funcions $R(n), C(n)$ :  $\Pi_{C,d,R}$ is in $\AM$}
+
+\begin{proof}
+
+We will define an $\AM$ protcol that accepts $\Pi_{C,d,R}$. On any shared input $z \{0,1\}^*$ Merlin will try to prove that $h_z$ is not a good soundness presering $\PRG$.
+\end{proof}
+
+\end{claim}
+
 \section{Why tackle $\HVSZK$ and not $\SZK$?}
+\textbf{TODO:}
+\begin{enumerate}
+	\item Show that if the original language is in $\SZK$ than clearly the de-randomized one is also simulatable. (Naive)
+	\item Explain why it's unlikely to have a gap between randomness and comunication in a $\SZK$ proof system, since all known transformation first kill that gap. (Add analysis of known transformations)
+
+	
+\end{enumerate}
+
 
 \section{$\varepsilon \PRG$ build}
+\textbf{TODO:}
+Show that the same build is also an $\varepsilon$-$\PRG$ in the computational sense, which means it hits recognizable sets with simmilar probability.
+
 
 \section{Inverting the $\PRG$}
+\textbf{TODO:}
+Explain why it's OK for the $\PRG$ to also output part of the seed (The part the selects the hash function)
+
+Explain how to invert low-level polynomials in polynomial time and generate an inverting algorithm
+
 
 \section{Knowledge complexity Vs Randomness tradeoff}
+\textbf{TODO:}
+Talk about knowledge complexity in the fraction sense. Show how to create a simulator to a fraction of the conversations.
+
+Show that the simulation deviation is not a problem due to the previous section about $\varepsilon$ - $\PRG$.
 
 \subsection{Borrowing randomness from the proover}
+\textbf{TODO:}
+Show that we can play with the tradeoff acheived above, by requesting the prover to add ranomness to the interaction, and thus increase communication, but loose less "knowledge"
 
 \subsection{Knowledge complexity and sequential repetitions}
+\textbf{TODO:}
+A-priori, knowledge complexity isn't preserved over sequential repetitions of the protocol. Perhaps we can show that in our case it is? Or is it?
 
 \section{Why can't we get Zero-Knowoledge?}
+	\item Hopefully be able to show that it will be imposible to simulate the new verifier using the old simulator as black-box.	
 
 \section{Super-Constant number of rounds}
 
@@ -95,8 +223,16 @@
 
 \subsection{Trusted Hardware}
 
+\begin{thebibliography}{}
+\bibitem{AASY16} B. Applebaum, S. Aremenko, R. Shaltiel, G. Yang: Incompressible Functions, Relative-Error Extractors, and the Power
+of Nondeterministic Reductions
 
- 
+\bibitem{DL20} H. Dahari, Y. Lindel: Deterministic-Prover Zero-Knowledge Proofs
+
+\end{thebibliography}
+
+
+
 \end{document}
 
 
