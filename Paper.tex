@@ -74,6 +74,15 @@
 
 \section{Derandomizing $\AM \cap co-\AM$}
 
+\subsection{Non-deterministic derandomization recipe}
+
+We will attempt to generalize the  technique seen in \cite{AASY16} in order to generate a recipe for generating $\PRG$s from random hash functions to many different properties 
+\begin{enumerate}
+    \item Show that a random hash function taken from a $k$-wise independent hash family, for a sufficiently large $k$, satisfies the $\PRG$ property required with high probability. This is easily done using Chernoff bounds.
+    \item Demonstrate the distinguishing between "good" and "bad" $\PRG$s of the required property can be done in $\AM$, by designing an $\AM$ protocol.
+    \item Since $\AM \subset \NP/poly$, and since we assume that we can de-randomize non-deterministic circuits, we can derandomize the selection of the has function, and generate a uniform, polynomial time, $\PRG$ with the required property.
+\end{enumerate}
+
 \subsection{Random hash function}
 
 \definition{Soundness preserving PRG}
@@ -193,7 +202,7 @@ Explain the low-degree polynomials, and how random complex is choosing one at ra
 
 \begin{definition}{Protocol Specific - Soundness preserving PRG}
 
-Let $<P,V>$  be some $\IP[k]$ protocol for some constant $k$ such that $V$ uses $R(n)$ random coins and has running time bounded by $R(n)^d$ and sends $C(n)$ bits of random to $P$ during the interaction. We say that a length extending function $G:\{0,1\}^{S(n)} \to \{0,1\}^{R(n)}$ for $S(n) < R(n)$ is a $\varepsilon$-Soundness Preserving $\PRG$ for $<P,V>$ if:
+Let $<P,V>$  be some $\IP[k]$ protocol for some constant $k$ such that $V$ uses $R(n)$ random coins and has running time bounded by $R(n)^d$ and sends $C(n)$ bits of communication to $P$ during the interaction. We say that a length extending function $G:\{0,1\}^{S(n)} \to \{0,1\}^{R(n)}$ for $S(n) < R(n)$ is a $\varepsilon$-Soundness Preserving $\PRG$ for $<P,V>$ if:
 
 $$ \forall{x \notin \{0,1\}^n}. \forall{P^*}. \bigg|\Pr_{s \in U_s}[<P^*,V^G>(x, r) = 1] - \Pr_{r \in U_r}[<P^*, V>(x, s) = 1]\bigg| \leq \varepsilon$$
 	
@@ -252,6 +261,29 @@ Given some $z$ such that $h_z$ is a $R(n)^d$ soundness preserving $\PRG$ for $<P
 In conclusion, for any $z \in \Pi_{NO}$ and any cheating merlin $M^*$ the probabilty that $A$ will accept is at most $2\mu(n) + 2R(n)^{-d}$.
 
 \begin{theorem}
+\label{soundness-perserving-PRG-Proof}
+
+If $E$ is hard for exponential size non-deterministic circuits, then for every proof system $<P,V>$ and every constant $d > 1$ such that $V$ uses $R(n)$ random coins, runs in time $R(n)^d$ and sends $C(n)$ bits of communication, there exists a constant $a > 1$ and there exists a function $G: \{0,1\}^{2C(n) + a\log{R(n)}} \to \{0,1\}^{R(n)}$ that is $R(n)^{-d}$ soundness preserving $\PRG$ for $<P,V>$.
+
+\end{theorem}
+
+\begin{proof}
+TODO: We can either write a proof for this statement, very simmilar to the one seen in the paper, or we can write a more general proof which shows thiat is true for any type of $\PRG$ we can imagine.
+\end{proof}
+
+\subsection{Protocol completness}
+\subsubsection{Perfect completness}
+
+\begin{corollary}
+Given some protocol $<P,V>$ for some $\IP[k]$ language that has perfect completness, and given any function $G: \{0,1\}^s \to \{0,1\}^r$ that runs in polynomial time, than $<P, V^G>$ also has perfect completness.
+\end{corollary}
+
+
+
+\subsubsection{Moving to non-perfect completness}
+A-priori we know that any non perfect-completness proof system $<P,V>$ in $\AM$ can be converted to a perfect completeness protocol. \cite{FGMSZ89} However, the process of this transition breaks zero-knowledge of the protocol since it contains parallel repetitions, and it grately increases communication and randomness of the protocol. Thus we would like to proove that our $\PRG$ preserves completness for non perfect-completness protocols as well.
+
+\begin{theorem}
 
 
 TODO: Simultanously derandomize both $\NP / poly$ circuits to get a $\PRG$ both for soundness and completness, thus derandomizing the $\AM \cap co\AM$ class.
@@ -271,11 +303,23 @@ TODO: Simultanously derandomize both $\NP / poly$ circuits to get a $\PRG$ both 
 
 
 \section{Inverting the $\PRG$}
-\textbf{TODO:}
-Explain why it's OK for the $\PRG$ to also output part of the seed (The part the selects the hash function)
+\subsection{Motivation}
 
-Explain how to invert low-level polynomials in polynomial time and generate an inverting algorithm
+Now that we are able to dernadomize interactive protocols, we want to preserve some part of the "zero-knowledgness" of the protocol. In the "Simulator paradigm" that is used to measure knowledge, the simulator must simulate the entire view of the verifier $V$ in the interaction $<P,V>$. In the case of $V^G$ our de-randomized simulator, it's view consists of both a seed $s$ to the $\PRG$ and the pseudo-random bits $G(s)$. Losly speaking, any simulator $S^*$ that might try to simulate the new interaction $<P, V^G>$ must be able to generate views that preserve the correlation between $s$ and $G(s)$.
 
+One possible approach to this problem is to use the original simulator $S$ to generate a view that is correlated with view of $<P,V>$, and than take the simulated coins $r$ and find a pre-image of $r$ under $G$ in order to preserve the correlation between the simulated seed of the $\PRG$ and it's simulated output.
+
+\subsection{$\PRG$ that outputs part of it's seed}
+
+Recall that the soundness-preserving $\PRG$ that we were able to generate in \ref{soundness-perserving-PRG-Proof} is $G:\{0,1\}^{\tau(n)} \times \{0,1\}^S(n) \to \{0,1\}^{R(n)}$, which is defined by $G(z, s) = H_z(s)$. We now define an augmented $\PRG$ $G'$ that is $G:' G:\{0,1\}^{\tau(n)} \times \{0,1\}^S(n) \to \{0,1\}^{R(n)} \times \{0,1\}^{\tau(n)}$ which is defined by $G'(z,s) = G(z,s)||z$. In other words, $G'$ appends a part of it's seed to it's output.
+
+Since the definition of $<P,V>$ specific $\varepsilon$ soundness-preserving $\PRG$ is completly dependent on the specific honest verifier $V$, and the definition of $V^G$ as a verifier that uses the output of $G$ as it's random coins, than clealry if $G$ is such a $\PRG$ than so is $G'$ since can we define $V^G$ to ignore all random coins that are on it's tape that are excess.
+
+\begin{claim}
+
+Given $G:\{0,1\}^{\tau(n)} \times \{0,1\}^S(n) \to \{0,1\}^{R(n)}$ that is an $\varepsilon$ soundness preserving $\RPG$ for protocol $<P,V>$, than $G:' G:\{0,1\}^{\tau(n)} \times \{0,1\}^S(n) \to \{0,1\}^{R(n)} \times \{0,1\}^{\tau(n)}$ that is defined $G'(z,s) = G(z,s)||z$ is also an $\varepsilon$ soundness preserving $\PRG$ for protocol $<P,V>$
+
+\end{claim}
 
 \section{Knowledge complexity Vs Randomness tradeoff}
 \textbf{TODO:}
@@ -305,6 +349,8 @@ A-priori, knowledge complexity isn't preserved over sequential repetitions of th
 of Nondeterministic Reductions
 
 \bibitem{DL20} H. Dahari, Y. Lindel: Deterministic-Prover Zero-Knowledge Proofs
+
+\bibitem{FGMSZ89} M. Fruer, O. Goldreich, Y. Mansour, M. Sipser, S. Zachos: On Completeness and Soundness in Interactive Proof Systems
 
 \end{thebibliography}
 
