@@ -10,9 +10,8 @@
 \usetikzlibrary{trees}
 \usepackage{verbatim}
 \usepackage[hidelinks]{hyperref}
-
 \input{macro}
-
+\usepackage{algorithm,algpseudocode}
 
 \setcounter{MaxMatrixCols}{20}
 
@@ -73,17 +72,17 @@
 
 \section{Definitions, Notations and Prelimineris}
 
-\section{Derandomizing IP[const]}
+\section{Derandomizing $\AM \cap co-\AM$}
 
 \subsection{Random hash function}
 
 \definition{Soundness preserving PRG}
 
-Given some length extending function $G:\{0,1\}^{S(n)} \to \{0,1\}^{R(n)}$ for $S(n) < R(n)$ we say that $G$ is $(\varepsilon, n^d, C(n))$-Soundness Preserving $\PRG$ if for every $\IP$ protocol $<P,V>$ such that running time of $V$ is bounded by $n^d$, and the number of random coins $V$ uses is $R(n)$, and the length of the communication $V \to P$ is $C(n)$ the following holds:
+Given some length extending function $G:\{0,1\}^{S(n)} \to \{0,1\}^{R(n)}$ for $S(n) < R(n)$ we say that $G$ is $(\varepsilon, n^d, C(n),k)$-Soundness Preserving $\PRG$ if for every $\IP[k]$ protocol $<P,V>$ such that running time of $V$ is bounded by $n^d$, and the number of random coins $V$ uses is $R(n)$, and the length of the communication $V \to P$ is $C(n)$ the following holds:
 
 Denote with $V^G$ the derandomized verifier, than:
 
-For every $x \in \{0,1\}^n$ and for every $P^*$ determenistic \footnote{The reason we care only about deterministic proovers is that the best prover strategy can always be transformed to a determinstic strategy. This will pose a problem when dealing with $\SZK$, however we will be dealing with $\HVSZK$. See \cite{DL20} for details.} prover strategy:
+For every $x \notin L$ and for every $P^*$ determenistic \footnote{The reason we care only about deterministic proovers is that the best prover strategy can always be transformed to a determinstic strategy. This will pose a problem when dealing with $\SZK$, however we will be dealing with $\HVSZK$. See \cite{DL20} for details.} prover strategy:
 	
 $$ |\Pr_{s \in U_s}[<P^*,V^G>(x, r) = 1] - \Pr_{r \in U_r}[<P^*, V>(x, s) = 1]| \leq \varepsilon$$
 	
@@ -154,6 +153,35 @@ This is true for any strategy $P^*$ and any shared input $x$, for any $z$ such t
 
 \end{proof}
 
+\definition {Computational $\varepsilon$-$\PRG$}
+
+Given a class of functions $\mathcal{F} \subset \{f | f: \{0,1\}^n \to \{0,1\}\}$ we say that $G: \{0,1\}^r \to \{0,1\}^n$ is an $\varepsilon$ computational $\PRG$ against $\mathcal{F}$ if for every $f \in \mathcal{F}$:
+$$ \bigg| \Pr_{r \in U_r}[C(G(r)) = 1] - \Pr_{n \in U_n}[C(n) = 1] \bigg| \leq \varepsilon$$
+
+\begin{claim} {Collection of computational $\PRG$s from hash functions}
+
+Let $\mathcal{F} \subset P(\{0,1\}^n)$ be some set of sets of binary strings of length $n$ \footnote{One can think of a set of binary functions as simply a set of the strings that are mapped to 1}. Denote $F = |\mathcal{F}|$. Let $\varepsilon, \delta \in [0,1]$ be two constants. Denote with $\mathcal{H} = \{ h_z : \{0,1\}^r \to \{0,1 \}^n \}$ a family of hash functions from $\{0,1\}^r$ to $\{0,1\}^n$. If $\mathcal{H}$ is t-wise independent hash functions family , than it is also a collection of $\varepsilon$ computational $\PRG s$ against $\mathcal{F}$ with failure probability $\delta$. Where $r = 2\log(1 / \varepsilon) + 3\log(t)$ and $t = 2\log(1 / \delta) + 2\log (F)$.
+\end{claim}
+
+\begin{proof}
+
+Let $\sigma \in \mathcal{F}$ be some set in the family $\mathcal{F}$. For every $s \in \{0,1\}$ we define a random variable $v_s$ such that upon selecting $h \hookleftarrow \mathcal{H}$ uniformly at random, $v_s$ is the indicator for the event $h(s) \in \sigma$. Since $\mathcal{H}$ is a family of t-wise hash functions we know that $h(s)$ is distributed uniformly in $\{0,1\}^n$ (Where the randomness is taken from the selction of $h$). Thus we get that:
+$$ E[v_s] = \Pr_{h \hookleftarrow \mathcal{H}}[h(s) \in \sigma] = \Pr_{r \in U_n}[r \in \sigma] = \mu_{\sigma}$$
+
+Where $\mu_{\sigma}$ is the density of $\sigma$ in $\{0,1\}^n.$
+
+Our goal is to show that a random function is indeed a $\varepsilon$ Computationsl $\PRG$ so we will examine the value:
+
+$$ \Delta := \Pr_{h \hookleftarrow \mathcal{H}}[ | \Pr_{s \in U_s}[G(s) \in \sigma] - \Pr_{r \in U_n}[r \in \sigma] | \leq \varepsilon ] = \Pr_{h \hookleftarrow \mathcal{H}}[ | \sum_{s \in \{0,1\}^r} v_s 2^{-r}- \mu_{\sigma} | \leq \varepsilon] $$
+
+Using the boundry on sums of $t$ wise independent variables we get:
+
+$$ \Delta  \leq \left( \frac{t^2}{2^{r} \varepsilon^2} \right) ^{t/2} = \left(\frac{1}{t} \right)^{t/2} \leq \frac{\delta}{|F|}$$
+
+Thus if we take a union bound over all $\sigma \in \mathcal{F}$ we get that for all $\sigma \in \mathcal{F}$, a random hash function from the family $\mathcal{H}$ is an $\varepsilon$ Computational $\PRG$ for $\sigma$ with probability $1-\delta$
+
+\end{proof}
+
 \subsection{Sampling an hash function at random - Efficient?}
 
 \textbf{TODO:}
@@ -162,21 +190,75 @@ Explain why we can uniformly select hash functions, and there is one algorithm t
 Explain the low-degree polynomials, and how random complex is choosing one at random.
 
 \subsection{De-Randomizing the hash function selection}
-Given a specific family of hash functions $\mathcal{H}_{C,d}$ that satisfies \ref{PRG from random hash} and given the evaluation algorithm $H: \{0,1\}^{Z(n)} \times \{0,1\}^{S(n)} \to \{0,1\}^{R(n)}$ which evaluates to $H(z, \cdot) = h_z(\cdot)$ and runs in polynomial time:
-We define a promise problem $\Pi_{C,d,R}$ over strings $z$ such that:
+
+\begin{definition}{Protocol Specific - Soundness preserving PRG}
+
+Let $<P,V>$  be some $\IP[k]$ protocol for some constant $k$ such that $V$ uses $R(n)$ random coins and has running time bounded by $R(n)^d$ and sends $C(n)$ bits of random to $P$ during the interaction. We say that a length extending function $G:\{0,1\}^{S(n)} \to \{0,1\}^{R(n)}$ for $S(n) < R(n)$ is a $\varepsilon$-Soundness Preserving $\PRG$ for $<P,V>$ if:
+
+$$ \forall{x \notin \{0,1\}^n}. \forall{P^*}. \bigg|\Pr_{s \in U_s}[<P^*,V^G>(x, r) = 1] - \Pr_{r \in U_r}[<P^*, V>(x, s) = 1]\bigg| \leq \varepsilon$$
+	
+\end{definition}
+
+Given some specific $\IP[k]$ protocol $<P,V>$ for language $L$ such that $L \in \AM \cap co\AM$, with parmaters $R(n), C(n), R(n)^d$,  let $\mathcal{H}_{C,d}$ be a family of hash functions that satisfies \ref{PRG from random hash} and given the evaluation algorithm $H: \{0,1\}^{Z(n)} \times \{0,1\}^{S(n)} \to \{0,1\}^{R(n)}$ which evaluates to $H(z, \cdot) = h_z(\cdot)$ and runs in polynomial time:
+We define a promise problem $\Pi_{C,d,R}^{P,V}$ over strings $z$ such that:
 \begin{itemize}
-	\item $z \in \Pi_{YES}$ if $H(z, \cdot)$ is not an $(4R(n)^d, R(n)^d, C(n))$ soundness preserving $\PRG$.
-	\item $z \in \Pi_{NO}$ if $H(z, \cdot)$ is a $(2R(n)^d, R(n)^d, C(n)$
+	\item $z \in \Pi_{YES}$ if $H(z, \cdot)$ is not an $4R(n)^{-d}$ soundness preserving $\PRG$ for $<P,V>$.
+	\item $z \in \Pi_{NO}$ if $H(z, \cdot)$ is a $2R(n)^{-d}$ soundness preserving $\PRG$ for $<P,V>$
 \end{itemize}
 
-\begin{claim} {for any constant $d > 1$ and length extending funcions $R(n), C(n)$ :  $\Pi_{C,d,R}$ is in $\AM$}
+\begin{claim} {$\Pi_{C,d,R}$ is in $\AM$}
+
+For any constant $d > 1$ and length extending funcions $R(n), C(n)$, and for any $\IP[k]$ protocol $<P,V>$ for some constant $k$ with negligable soundness $\mu(n)$ \footnote{We will tackle the case of original non-negligable soundness in the future}, such that $V$ runs in time $R(n)^d$, uses $R(n)$ random coins and sends $C(n)$ bits to $P$ during the intearction, the gap problem $\Pi_{C,d,R}^{P,V}$ is in $\AM$.
+
+\end{claim}
 
 \begin{proof}
 
-We will define an $\AM$ protcol that accepts $\Pi_{C,d,R}$. On any shared input $z \{0,1\}^*$ Merlin will try to prove that $h_z$ is not a good soundness presering $\PRG$.
-\end{proof}
+For any such $d$ and $<P,V>$ we will define an $\AM$ protcol that accepts $\Pi_{C,d,R}^{P,V}$. On any shared input $z \in \{0,1\}^*$ Merlin will try to prove that $h_z$ is not a good soundness preserving $\PRG$. Merlin will do that by presenting the one $x \notin L$ that $V$ can be cheated on, and will emulate the cheating strategy.
 
-\end{claim}
+
+\begin{algorithm}
+\caption{$\AM$ protocol for $\Pi_{C,d,R}$ on shared input $(1^n, z)$}
+\begin{algorithmic}[1]
+
+\State $M$ sends $A$ some $x \in \{0,1\}^n$
+\State $M$ and $A$ perform an interactive proof for the fact that $x \notin L$. $M$ tries to convince $A$ that $x \notin L$, and if $A$ is not convinces, $A$ will reject.
+\State $A$ uses $h_z$ and random seed $s$ to generate $r = h_z(s)$.
+\State $A$ and $M$ play the interactive proof $<V, P^*>$ on $x$ while $A$ runs $V$ using the random coins $r$, and $M$ plays the strategy $P^*$ of his likings.
+\State $A$ accepts if $V$ accepts the interaction with $P^*$ on $x$ and $r$.
+
+\end{algorithmic}
+\end{algorithm}
+
+\underline{Completness:}
+Given some $z$ such that $h_z$ is not a $4R(n)^d$ soundness preserving $\PRG$ for $<P,V>$, than clearly there exists some $x \notin \{0,1\}^n$ and some strategy $P^*$ such that  
+
+$$\bigg|\Pr_{s \in U_s}[<P^*,V^G>(x, r) = 1] - \Pr_{r \in U_r}[<P^*, V>(x, s) = 1]\bigg| \geq 4R(n)^d$$
+
+Since the original soundness of the protocol $<P,V>$ is $\mu(n)$ which is negligable in $n$, we get that the probablity that $V$ will accept the interaction with $P^*$ if given the psuedo-coins is large enough:$$\Pr_{s \in U_s}[<P^*,V^G>(x, r) = 1] > 4R(n)^d$$.
+
+Morover we assumed that $L \in \AM \cap co\AM$, so $M$ can prove to $A$ that $x \notin L$ in a constant amount of rounds, and do so with negligable completness error $\mu(n)$.
+
+In conclusion, the probabilty that $A$ will accept the interaction is at least $(1-\mu(n))4R(n)^{-d}$.
+
+\underline{Soundness:}
+Given some $z$ such that $h_z$ is a $R(n)^d$ soundness preserving $\PRG$ for $<P,V>$ we examine the acceptance probabilty of $A$. 
+\begin{itemize}
+	\item A cheating merlin $M^*$ can either send some $x$ such that $x \in L$ and try to convince $A$ that $x \notin L$. Since $L \in co\AM$ the probability that $M^*$ succeedes is no more than $\mu(n)$.
+	
+	\item A cheating merlin $M^*$ can send some $x \notin L$, and than play some strategy $P^*$ against $V^G$. Since $x \notin L$ we know that probability that $V$ will accept an interaction with $P^*$ on real coins is at most $\mu(n)$. Since $h_z$ is a soundness preserving $\PRG$ we get that $V^G$ will accept interaction with $P^*$ with probabilty at most $\mu(n) + 2R(n)^{-d}$
+\end{itemize}
+
+In conclusion, for any $z \in \Pi_{NO}$ and any cheating merlin $M^*$ the probabilty that $A$ will accept is at most $2\mu(n) + 2R(n)^{-d}$.
+
+\begin{theorem}
+
+
+TODO: Simultanously derandomize both $\NP / poly$ circuits to get a $\PRG$ both for soundness and completness, thus derandomizing the $\AM \cap co\AM$ class.
+
+\end{theorem}
+
+\end{proof}
 
 \section{Why tackle $\HVSZK$ and not $\SZK$?}
 \textbf{TODO:}
@@ -186,11 +268,6 @@ We will define an $\AM$ protcol that accepts $\Pi_{C,d,R}$. On any shared input 
 
 	
 \end{enumerate}
-
-
-\section{$\varepsilon \PRG$ build}
-\textbf{TODO:}
-Show that the same build is also an $\varepsilon$-$\PRG$ in the computational sense, which means it hits recognizable sets with simmilar probability.
 
 
 \section{Inverting the $\PRG$}
